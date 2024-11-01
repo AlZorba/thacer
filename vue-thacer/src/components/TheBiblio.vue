@@ -22,16 +22,18 @@
             ci-dessous en gras dans la barre de recherche.
           </p>
           <p>
-            La bibliographie est maintenue à jour collaborativement sur Zoter par le groupe
-            "ThaCER".
-            <a href="https://www.zotero.org/groups/5022130/thacer/library"
+            La bibliographie est maintenue à jour collaborativement sur Zotero.
+            <a
+              href="https://www.zotero.org/groups/5022130/thacer/library"
+              target="_blank"
+              rel="noopener noreferrer"
               >www.zotero.org/groups/5022130/thacer/library</a
             >
           </p>
           <h3>Corpus intégrés :</h3>
 
           <div v-for="entry in biblioZotero" :key="entry.key">
-            <div v-if="entry.data.collections == 'QK8TC6JE'">
+            <div>
               <strong>{{ entry.data.shortTitle }}</strong> {{ entry.data.creators?.[0].firstName }}
               {{ entry.data.creators?.[0].lastName }} <i>{{ entry.data.title }}</i
               >,
@@ -40,22 +42,9 @@
             </div>
           </div>
 
-          <h3>En cours d'intégration :</h3>
-          <div v-for="entry in biblioZotero" :key="entry.key">
-            <div v-if="entry.data.collections == 'JVX4B9VP'">
-              <strong>{{ entry.data.shortTitle }}</strong> {{ entry.data.creators?.[0].firstName }}
-              {{ entry.data.creators?.[0].lastName }} <i>{{ entry.data.title }}</i
-              >,
-              {{ entry.data.date }}
-              <p>{{ entry.data.abstractNote }}</p>
-            </div>
-          </div>
           <h3>Bibliographie :</h3>
           <iframe
-            src="https://api.zotero.org/groups/5022130/items?format=bib"
-            width="100%"
-            height="450"
-            frameborder="0"
+            src="https://api.zotero.org/groups/5022130/collections/3E2W4D35/items?format=bib&style=bulletin-de-correspondance-hellenique"
           >
           </iframe>
         </div>
@@ -76,7 +65,7 @@ export default {
   },
 
   mounted() {
-    fetch('https://api.zotero.org/groups/5022130/items')
+    fetch('https://api.zotero.org/groups/5022130/collections/QK8TC6JE/items')
       .then((response) => response.json())
       .then((biblioZotero) => {
         this.biblioZotero = biblioZotero.sort((a, b) => {
@@ -106,5 +95,10 @@ a {
 }
 h3 {
   margin-top: 1em;
+}
+iframe {
+  overflow: hidden;
+  height: 10000px;
+  width: 100%;
 }
 </style>
