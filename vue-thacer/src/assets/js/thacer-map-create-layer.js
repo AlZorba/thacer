@@ -16,20 +16,18 @@ export function setCeramLayer(ceramLayer) {
     '<a class="text-decoration-none text-secondary" target="_blank" href=#/ceram?ID=' +
     ceramLayer.feature.properties.ID +
     '>'
-  if (ceramLayer.feature.properties.Identification) {
-    popup = popup + ceramLayer.feature.properties.Identification + '<br>'
-  }
   if (ceramLayer.feature.properties.Forme) {
     popup = popup + ceramLayer.feature.properties.Forme + '<br>'
   }
-  if (ceramLayer.feature.properties.Type) {
-    popup = popup + 'Type : ' + ceramLayer.feature.properties.Type + '<br>'
+  if (ceramLayer.feature.properties.Pi) {
+    popup = popup + 'Π' + ceramLayer.feature.properties.Pi + '<br>'
   }
   if (ceramLayer.feature.properties.Inv_Fouille) {
     popup = popup + 'inv : ' + ceramLayer.feature.properties.Inv_Fouille + '<br>'
   }
-  if (ceramLayer.feature.properties.Pi) {
-    popup = popup + 'Π' + ceramLayer.feature.properties.Pi + '<br>'
+
+  if (ceramLayer.feature.properties.Type) {
+    popup = popup + 'Type : ' + ceramLayer.feature.properties.Type + '<br>'
   }
   if (ceramLayer.feature.properties.Description) {
     popup = popup + ceramLayer.feature.properties.Description + '<br>'
@@ -106,23 +104,50 @@ export function createFeatureLayerSecteurs(ceram, markerClusterGroupCeram, map) 
 }
 
 export function createFeatureLayerCeram(markerClusterGroupCeram, map) {
-  // create a new leaflet GeoJSON layer
+  // Créer une nouvelle couche GeoJSON Leaflet
   let featureLayerCeram = L.geoJSON()
 
-  fetch(import.meta.env.VITE_API_URL + 'index.php?CERAM')
-    .then((response) => response.json())
-    .then((data) => {
-      featureLayerCeram = L.geoJSON(data, {
-        onEachFeature: function (feature, layer) {
-          setCeramLayer(layer)
-          markerClusterGroupCeram.addLayer(layer)
-        }
-      })
+  // Vérifier si les données sont déjà dans le sessionStorage
+  const cachedData = sessionStorage.getItem('ceramData')
+
+  if (cachedData) {
+    // Si les données sont dans le sessionStorage, les utiliser
+    const data = JSON.parse(cachedData)
+
+    featureLayerCeram = L.geoJSON(data, {
+      onEachFeature: function (feature, layer) {
+        setCeramLayer(layer)
+        markerClusterGroupCeram.addLayer(layer)
+      }
     })
+    search.designMarkersCeram(markerClusterGroupCeram)
+  } else {
+    // Sinon, récupérer les données via fetch
+    fetch(import.meta.env.VITE_API_URL + 'index.php?CERAM')
+      .then((response) => response.json())
+      .then((data) => {
+        // Stocker les données dans le sessionStorage
+        sessionStorage.setItem('ceramData', JSON.stringify(data))
 
+        // Créer la couche GeoJSON avec les données récupérées
+        featureLayerCeram = L.geoJSON(data, {
+          onEachFeature: function (feature, layer) {
+            setCeramLayer(layer)
+            markerClusterGroupCeram.addLayer(layer)
+          }
+        })
+        // Appliquer le design des marqueurs après ajout
+        search.designMarkersCeram(markerClusterGroupCeram)
+      })
+      .catch((error) => {
+        console.error('Erreur lors du chargement des données CERAM:', error)
+      })
+  }
+
+  // Configurer la recherche
   search.setupSearchCeramByText(markerClusterGroupCeram, map)
-  designMarkersCeram(markerClusterGroupCeram)
 
+  // Retourner la couche Leaflet
   return featureLayerCeram
 }
 
@@ -136,25 +161,26 @@ export function createMarkerClusterGroupCeram() {
   })
 }
 
-function designMarkersCeram(layer) {
-  layer.on('layeradd', function (e) {
-    let identifier
-    let marker = e.layer,
-      feature = marker.feature
-    if (feature.properties.Pi) {
-      identifier = 'Π' + feature.properties.Pi
-    } else {
-      identifier = feature.properties.ID
-    }
-    marker.setIcon(
-      L.divIcon({
-        html: identifier,
-        className: 'ceram-marker',
-        iconSize: 'auto'
-      })
-    )
-  })
-}
+// function designMarkersCeram(layer) {
+//   layer.eachLayer(function (marker) {
+//     let identifier
+//     const feature = marker.feature
+
+//     if (feature.properties.Pi) {
+//       identifier = 'Π' + feature.properties.Pi
+//     } else {
+//       identifier = feature.properties.ID
+//     }
+
+//     marker.setIcon(
+//       L.divIcon({
+//         html: identifier,
+//         className: 'ceram-marker',
+//         iconSize: 'auto'
+//       })
+//     )
+//   })
+// }
 
 export function createFeatureLayerVestiges() {
   let vestiges = L.featureGroup()

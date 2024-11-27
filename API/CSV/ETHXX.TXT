@@ -1,4 +1,4 @@
-"ID","Référence tesson","Forme","Origine","Type","Catégorie","Decor","Analyse","Secteur","Lieu","Contexte Stratigraphie","Stratigraphie US","Date US","Datation","Photo","profil","Publication","secteur_ID","x","y"
+"ID","Référence tesson","Forme","Origine","Type","Catégorie","Decor","Analyse","Secteur","Lieu","Contexte Stratigraphie","Stratigraphie US","Date US","Datation","Photo","Profil","Publication","secteur_ID","x","y"
 "PdS71.2665","Porte du Silène 71 2665","Plat","Thasienne","THAS.5","VN",,,"Porte du Silène","Rue du rempart tronçon occidental",,"Fosse contre le rempart s. 57,60,339,352,354 (E1)",,,,,,197,24.712791306,40.774655185
 "VAL84.0174.0024[2]","Valma 84 0174 0024 [2]","Coupelle à une anse","Thasienne","THAS. 1","CC",,,"Valma Puits rond","Puits rond","2","Comblement du puits.","Contexte déposé vers 330.","C - D",,"np_14848",,51,24.714763980,40.780145908
 "PdS74.2128","Porte du Silène 74 2128","Chytra","Thasien",,,,,"Porte du Silène","Ib3",,,,,,"np_19403",,197,24.712791306,40.774655185

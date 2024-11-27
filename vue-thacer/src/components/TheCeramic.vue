@@ -80,47 +80,94 @@ export default {
     }
   },
   mounted() {
-    // Fetch item data
-    fetch(import.meta.env.VITE_API_URL + '/index.php?CERAM')
-      .then((response) => response.json())
-      .then((ceramGeojson) => {
-        const id = this.$route.query.ID
-        const ceramProperties = this.findCeramObjectProperties(id, ceramGeojson)
+    // Récupérer l'ID de la route
+    const id = this.$route.query.ID
 
-        if (ceramProperties) {
-          this.ceramData = ceramProperties
-          this.setCeramArchimageValues(ceramProperties)
+    // Vérifier si les données céramiques sont déjà dans le cache
+    const cachedData = sessionStorage.getItem('ceramData')
+    if (cachedData) {
+      // Si les données sont dans le cache, les utiliser
+      const ceramGeojson = JSON.parse(cachedData)
+      const ceramProperties = this.findCeramObjectProperties(id, ceramGeojson)
 
-          const INV = this.ceramData.ID
-          const ANA = this.ceramData.Num_Analyse ? this.ceramData.Num_Analyse : ''
+      if (ceramProperties) {
+        this.ceramData = ceramProperties
+        this.setCeramArchimageValues(ceramProperties)
 
-          fetch(`${import.meta.env.VITE_API_URL}index.php?INV=${INV}&ANA=${ANA}`)
-            .then((response) => response.json())
-            .then((imageUrlArrayList) => {
-              if (isObject(imageUrlArrayList)) {
-                this.imageUrlArrayList = imageUrlArrayList
-                this.loadingStatusImagesUrls = 'loaded'
-              } else {
-                notifyProgrammaticError(
-                  `Error, imageUrlArrayList is not an object : ${imageUrlArrayList}`
-                )
-                this.loadingStatusImagesUrls = 'error'
-              }
-            })
-            .catch((error) => {
-              console.error(error)
+        const INV = this.ceramData.ID
+        const ANA = this.ceramData.Num_Analyse ? this.ceramData.Num_Analyse : ''
+
+        // Fetch des images
+        fetch(`${import.meta.env.VITE_API_URL}index.php?INV=${INV}&ANA=${ANA}`)
+          .then((response) => response.json())
+          .then((imageUrlArrayList) => {
+            if (isObject(imageUrlArrayList)) {
+              this.imageUrlArrayList = imageUrlArrayList
+              this.loadingStatusImagesUrls = 'loaded'
+            } else {
+              notifyProgrammaticError(
+                `Error, imageUrlArrayList is not an object : ${imageUrlArrayList}`
+              )
               this.loadingStatusImagesUrls = 'error'
-            })
-          this.loadingStatusTextAndArchimageData = 'loaded'
-        } else {
-          this.loadingStatusTextAndArchimageData = 'not_found'
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-        this.loadingStatusTextAndArchimageData = 'error'
-      })
+            }
+          })
+          .catch((error) => {
+            console.error(error)
+            this.loadingStatusImagesUrls = 'error'
+          })
+
+        this.loadingStatusTextAndArchimageData = 'loaded'
+      } else {
+        this.loadingStatusTextAndArchimageData = 'not_found'
+      }
+    } else {
+      // Si le cache n'existe pas, faire le fetch
+      fetch(import.meta.env.VITE_API_URL + '/index.php?CERAM')
+        .then((response) => response.json())
+        .then((ceramGeojson) => {
+          // Stocker les données dans le cache
+          sessionStorage.setItem('ceramData', JSON.stringify(ceramGeojson))
+
+          const ceramProperties = this.findCeramObjectProperties(id, ceramGeojson)
+
+          if (ceramProperties) {
+            this.ceramData = ceramProperties
+            this.setCeramArchimageValues(ceramProperties)
+
+            const INV = this.ceramData.ID
+            const ANA = this.ceramData.Num_Analyse ? this.ceramData.Num_Analyse : ''
+
+            // Fetch des images
+            fetch(`${import.meta.env.VITE_API_URL}index.php?INV=${INV}&ANA=${ANA}`)
+              .then((response) => response.json())
+              .then((imageUrlArrayList) => {
+                if (isObject(imageUrlArrayList)) {
+                  this.imageUrlArrayList = imageUrlArrayList
+                  this.loadingStatusImagesUrls = 'loaded'
+                } else {
+                  notifyProgrammaticError(
+                    `Error, imageUrlArrayList is not an object : ${imageUrlArrayList}`
+                  )
+                  this.loadingStatusImagesUrls = 'error'
+                }
+              })
+              .catch((error) => {
+                console.error(error)
+                this.loadingStatusImagesUrls = 'error'
+              })
+
+            this.loadingStatusTextAndArchimageData = 'loaded'
+          } else {
+            this.loadingStatusTextAndArchimageData = 'not_found'
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+          this.loadingStatusTextAndArchimageData = 'error'
+        })
+    }
   },
+
   methods: {
     findCeramObjectProperties(id, ceramGeojson) {
       const features = ceramGeojson['features']

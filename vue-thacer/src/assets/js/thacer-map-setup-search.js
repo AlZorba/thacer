@@ -3,73 +3,67 @@ import { setCeramLayer } from '@/assets/js/thacer-map-create-layer'
 import { mapToRealKeyName } from '@/assets/js/key-mapping'
 
 export function setupSearchCeramByText(markerClusterGroupCeram, map) {
-  /* global L */
   const filterInput = document.getElementById('filter-input')
   filterInput.addEventListener('keyup', (e) => {
     if (e.keyCode !== 13) {
       return
     }
     if (!e.target.value) {
-      // Clear filter on submiting an empty field
+      // Clear filter on submitting an empty field
       document.getElementById('nonloc').innerHTML = []
-
       markerClusterGroupCeram.clearLayers()
       return
     }
+
     const inputSearchString = e.target.value.trim().toLowerCase()
+    // Récupérer les données depuis le cache
+    const cachedData = JSON.parse(sessionStorage.getItem('ceramData'))
+
+    // Traiter les objets non localisés
     document.getElementById('nonloc').innerHTML = []
-
     document.getElementById('loading-unlocalised').classList.remove('d-none')
-    fetch(import.meta.env.VITE_API_URL + 'index.php?CERAM')
-      .then((r) => r.json())
-      .then((json) => {
-        Object.keys(json.features).forEach((k) => {
-          let obj = json.features[k]
 
-          // Adding current ceramObject only if unlocalised and passing input search string :
-          if (
-            obj.geometry.coordinates[0] === 0 &&
-            doesCeramObjectPassesInputSearchString(obj.properties, inputSearchString)
-          ) {
-            let label = obj.properties.Pi ? 'Π' + obj.properties.Pi : obj.properties.ID
+    Object.keys(cachedData.features).forEach((k) => {
+      let obj = cachedData.features[k]
 
-            document.getElementById('nonloc').innerHTML += [
-              '<a class="unlocalised-tag px-1 m-0 border border-white" href="#/ceram?ID=' +
-                obj.properties.ID +
-                '">' +
-                label +
-                '</a>'
-            ]
-          }
-        })
+      // Ajouter les objets céramiques seulement s'ils ne sont pas localisés et passent le filtre
+      if (
+        obj.geometry.coordinates[0] === 0 &&
+        doesCeramObjectPassesInputSearchString(obj.properties, inputSearchString)
+      ) {
+        let label = obj.properties.Pi ? 'Π' + obj.properties.Pi : obj.properties.ID
 
-        document.getElementById('loading-unlocalised').classList.add('d-none')
-      })
+        document.getElementById('nonloc').innerHTML +=
+          '<a class="unlocalised-tag px-1 m-0 border border-white" href="#/ceram?ID=' +
+          obj.properties.ID +
+          '">' +
+          label +
+          '</a>'
+      }
+    })
 
+    document.getElementById('loading-unlocalised').classList.add('d-none')
+
+    // Traiter les objets localisés
     markerClusterGroupCeram.clearLayers()
-
-    const ceramGeojsonUrl = import.meta.env.VITE_API_URL + 'index.php?CERAM'
     document.getElementById('loading-localised').classList.remove('d-none')
-    fetch(ceramGeojsonUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        const geojsonLayer = L.geoJSON(data, {
-          filter: (e) => {
-            return (
-              e.geometry.coordinates[0] !== 0 &&
-              doesCeramObjectPassesInputSearchString(e?.properties, inputSearchString)
-            )
-          },
-          onEachFeature: (feature, layer) => {
-            setCeramLayer(layer)
-          }
-        })
 
-        markerClusterGroupCeram.clearLayers()
-        markerClusterGroupCeram.addLayer(geojsonLayer)
-        map.addLayer(markerClusterGroupCeram)
-        document.getElementById('loading-localised').classList.add('d-none')
-      })
+    const geojsonLayer = L.geoJSON(cachedData, {
+      filter: (e) => {
+        return (
+          e.geometry.coordinates[0] !== 0 &&
+          doesCeramObjectPassesInputSearchString(e?.properties, inputSearchString)
+        )
+      },
+      onEachFeature: (feature, layer) => {
+        setCeramLayer(layer)
+      }
+    })
+    markerClusterGroupCeram.clearLayers()
+    markerClusterGroupCeram.addLayer(geojsonLayer)
+    map.addLayer(markerClusterGroupCeram)
+    document.getElementById('loading-localised').classList.add('d-none')
+    designMarkersCeram(markerClusterGroupCeram)
   })
 }
 
@@ -118,12 +112,12 @@ function isSearchItemSingleFound(searchItemSingle, ceramObject) {
     const searchItemValue = searchItemSingleSplit[0]
 
     const isValueContainedInIdentification = ceramObject['Identification']
-      ?.toLowerCase()
+      ?.toString()
       .includes(searchItemValue)
 
     const isValueContainedInForme = ceramObject['Forme']?.toLowerCase().includes(searchItemValue)
 
-    const isValueEqualsPi = ceramObject['Pi'] === searchItemValue
+    const isValueEqualsPi = ceramObject['Pi']?.toString().includes(searchItemValue)
 
     const isValueContainedInDescription = ceramObject['Description']
       ?.toLowerCase()
@@ -151,28 +145,58 @@ function isSearchItemSingleFound(searchItemSingle, ceramObject) {
       return false
     }
 
-    return ceramObject[searchItemKey].toLowerCase().includes(searchItemValue)
+    return ceramObject[searchItemKey].toString().toLowerCase().includes(searchItemValue)
   }
 
   return true
 }
+
 // When clicking sector select items with equivalent  secteur_ID
 export function searchCeramByClick(featureLayerCeram, markerClusterGroupCeram, map, layer) {
   map.removeLayer(markerClusterGroupCeram)
   markerClusterGroupCeram.clearLayers()
   let value = layer.feature.properties.secteur_ID
   featureLayerCeram.clearLayers()
-  fetch(import.meta.env.VITE_API_URL + 'index.php?CERAM')
-    .then((response) => response.json())
-    .then((data) => {
-      featureLayerCeram.addData(data)
-      featureLayerCeram.eachLayer(function (layer) {
-        if (layer.feature.properties['secteur_ID'] == value) {
-          setCeramLayer(layer)
-          markerClusterGroupCeram.addLayer(layer)
-        }
-      })
-    })
+
+  // Récupérer les données depuis le sessionStorage
+  const data = JSON.parse(sessionStorage.getItem('ceramData'))
+
+  // Filtrer les données pour inclure uniquement celles correspondant à secteur_ID == value
+  const filteredData = {
+    ...data,
+    features: data.features.filter((feature) => feature.properties['secteur_ID'] == value)
+  }
+
+  // Ajouter les données filtrées à la couche Leaflet
+  featureLayerCeram.addData(filteredData)
+
+  // Appliquer les configurations supplémentaires sur les couches
+  featureLayerCeram.eachLayer(function (layer) {
+    setCeramLayer(layer)
+    markerClusterGroupCeram.addLayer(layer)
+  })
+
+  // Appliquer le design personnalisé aux marqueurs
+  designMarkersCeram(markerClusterGroupCeram)
 
   map.addLayer(markerClusterGroupCeram)
+}
+
+export function designMarkersCeram(layer) {
+  layer.eachLayer(function (marker) {
+    let identifier
+    const feature = marker.feature
+
+    if (feature.properties.ID) {
+      identifier = feature.properties.ID
+    }
+
+    marker.setIcon(
+      L.divIcon({
+        html: identifier,
+        className: 'ceram-marker',
+        iconSize: 'auto'
+      })
+    )
+  })
 }
