@@ -13,7 +13,7 @@ export const keyMapping = {
   Famille: ['famille', 'family'],
   Catégorie: ['catégorie', 'categorie', 'category'],
   Type: ['type'],
-  Identification: ['identification', 'forme', 'shape'],
+  Forme: ['identification', 'forme', 'shape'],
   Description: ['description, texte'],
   Biblio: [
     'biblio',
