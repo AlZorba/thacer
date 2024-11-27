@@ -44,7 +44,7 @@
 
           <h3>Bibliographie :</h3>
           <iframe
-            src="https://api.zotero.org/groups/5022130/collections/3E2W4D35/items?format=bib&style=bulletin-de-correspondance-hellenique"
+            src="https://api.zotero.org/groups/5022130/collections/3E2W4D35/items?format=bib&style=bulletin-de-correspondance-hellenique&locale=fr-FR"
           >
           </iframe>
         </div>
