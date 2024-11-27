@@ -1,35 +1,4 @@
 <?php
-// Test array for debug purpose
-$test = array(
-    'type' => 'FeatureCollection',
-    'name' => 'secteurs',
-    'features' => array(
-        array(
-            'type' => '1821',
-            'geometry' => '11',
-            'properties' => array(
-                'GTh' => '96',
-                'Titre' => 'test'
-            )
-        ),
-        array(
-            'type' => '5465',
-            'geometry' => '22',
-            'properties' => array(
-                'GTh' => '97',
-                'Titre' => 'test95'
-            )
-        ),
-        array(
-            'type' => '40489',
-            'geometry' => '33',
-            'properties' => array(
-                'GTh' => '97',
-                'Titre' => 'test97'
-            )
-        )
-    )
-);
 if (isset($_GET['GTh'])) {
     // Get the contents of the JSON file 
     $strJsonFileContents = file_get_contents("./geojson/secteurs.geojson");
@@ -102,13 +71,7 @@ if (isset($_GET['GTh'])) {
 
     $files = glob("./CSV/*");
     foreach ($files as $filepath) {
-
         if ($handle = fopen($filepath, "r")) {
-
-
-
-
-
             # Loop through rows to build feature arrays
             $header = NULL;
             while (($row = fgetcsv($handle, 0, ',')) !== FALSE) {
@@ -139,6 +102,109 @@ if (isset($_GET['GTh'])) {
             fclose($handle);
         }
     }
+    // Requête vers l'API Heurist pour obtenir les données de céramiques
+    $url = "https://heurist.huma-num.fr/h6-alpha/api/records?db=THASOS_CERAMIQUE";
+
+    $heuristData = file_get_contents($url);
+    $dataArray = json_decode($heuristData, true);
+
+    $periodeMapping = array(
+        9639 => "Archaïque",
+        9640 => "Classique",
+        9641 => "Hellénistique",
+        9638 => "Précoloniale",
+        9642 => "Romaine"
+    );
+    $familleMapping = array(
+        9659 => "amphore",
+        9658 => "céramique de cuisson",
+        9652 => "commune",
+        9653 => "fine",
+        9651 => "stockage",
+        9650 => "tablette",
+        9657 => "trépied"
+    );
+    $categorieMapping = array(
+        9662 => "Bol à reliefs",
+        9663 => "Campanienne",
+        9669 => "Céramique à fond blanc",
+        9664 => "Chypriote",
+        9665 => "Cnidienne",
+        9649 => "Corinthienne",
+        9655 => "Cycladique",
+        9648 => "Sigillée orientale C",
+        9660 => "Figures Noires",
+        9646 => "Figures Rouges",
+        9654 => "Orientalisante",
+        9670 => "Paroi fine",
+        9668 => "Pergaménienne",
+        9666 => "Sigillée orientale A",
+        9667 => "Sigillée orientale B",
+        9647 => "Vernis noir",
+        9645 => "Vernis rouge",
+        9671 => "West Slope"
+    );
+
+    if ($dataArray && isset($dataArray['records'])) {
+        // Boucler sur chaque enregistrement de l'API Heurist
+        foreach ($dataArray['records'] as $record) {
+            // Vérifier la présence des informations nécessaires et construire les propriétés
+            $properties = array(
+                'Corpus' => current($record['details']['1128']), // source, collection
+                'ID' => current($record['details']['1128']) . current($record['details']['1123']),
+                'Description' => current($record['details']['1118']),
+                'Références' => current($record['details']['1119']),
+                'Attribution' => current($record['details']['1124']),
+                'Forme' => current($record['details']['1117']),
+            );
+
+            if (isset($record['details']['1107'])) {
+                $properties['Pi'] = current($record['details']['1107']);
+            }
+            if (isset($record['details']['1108'])) {
+                $properties['Inventaire'] = current($record['details']['1108']);
+            }
+            if (isset($record['details']['1111'])) {
+                $properties['Provenance'] = current($record['details']['1111']);
+            }
+            if (isset($record['details']['1112'])) {
+                $properties['secteur_ID'] = current($record['details']['1112']);
+            }
+            if (isset($record['details']['1114'])) {
+                $properties['Catégorie'] = isset($familleMapping[current($record['details']['1114'])])
+                    ? $familleMapping[current($record['details']['1114'])]
+                    : "Inconnue";
+            }
+            if (isset($record['details']['1115'])) {
+                $properties['Catégorie'] = isset($categorieMapping[current($record['details']['1115'])])
+                    ? $categorieMapping[current($record['details']['1115'])]
+                    : "Inconnue";
+            }
+            if (isset($record['details']['1120'])) {
+                $properties['Période'] = isset($periodeMapping[current($record['details']['1120'])])
+                    ? $periodeMapping[current($record['details']['1120'])]
+                    : "Inconnue";
+            }
+            $geometry = array(
+                'type' => 'Point',
+                'coordinates' => array(
+                    isset($record['details']['1121']) ? current($record['details']['1121']) : 0,
+                    isset($record['details']['1122']) ? current($record['details']['1122']) : 0
+                )
+            );
+
+            // Créer l'entrée Feature pour ce record
+            $feature = array(
+                'type' => 'Feature',
+                'geometry' => $geometry,
+                'properties' => $properties
+            );
+
+            // Ajouter la fonctionnalité au tableau GeoJSON
+            array_push($geojson['features'], $feature);
+        }
+    }
+
 
 } elseif (isset($_GET['INV'])) {
     // Return a json object with 3 lists of image urls. Example :
