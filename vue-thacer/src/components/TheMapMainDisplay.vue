@@ -28,7 +28,12 @@ g path {
 .leaflet-popup-content {
   padding: 2px;
   line-height: 1.2;
+  margin: 5px;
 }
+.leaflet-popup-content::first-letter {
+  text-transform: uppercase;
+}
+
 .leaflet-popup-content a:hover {
   opacity: 0.6;
   cursor: pointer;
@@ -41,6 +46,11 @@ g path {
 .leaflet-popup-content img {
   margin: 1%;
   width: 98%;
+}
+.leaflet-popup-content-wrapper {
+  width: auto;
+
+  white-space: normal; /* Assure que le texte fait un retour à la ligne si nécessaire */
 }
 
 .leaflet-container {
