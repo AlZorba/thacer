@@ -161,10 +161,10 @@ export function searchCeramByClick(featureLayerCeram, markerClusterGroupCeram, m
   // Récupérer les données depuis le sessionStorage
   const data = JSON.parse(sessionStorage.getItem('ceramData'))
 
-  // Filtrer les données pour inclure uniquement celles correspondant à secteur_ID == value
+  // Filtrer les données pour inclure uniquement celles correspondant à secteur_ID === value
   const filteredData = {
     ...data,
-    features: data.features.filter((feature) => feature.properties['secteur_ID'] == value)
+    features: data.features.filter((feature) => feature.properties['secteur_ID'] === value)
   }
 
   // Ajouter les données filtrées à la couche Leaflet
