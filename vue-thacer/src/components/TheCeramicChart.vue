@@ -124,7 +124,7 @@ export default {
       const chart2 = this.x
       const chart = this.y
       // indique X et Y pour le scatterchart
-      var output2 = xrfResultsThasos.map((s) => {
+      let output2 = xrfResultsThasos.map((s) => {
         // eslint-disable-next-line no-prototype-builtins
         if (s.hasOwnProperty(chart2)) {
           s.x = s[chart2]
@@ -138,23 +138,23 @@ export default {
 
       function getSampleByNum(Sample) {
         return output2.filter(function (output2) {
-          return output2.Sample == Sample
+          return output2.Sample === Sample
         })
       }
 
-      var sampleone = getSampleByNum(this.ANA)
-      var sampleonecr = sampleone[0]?.x
-      var sampleoneni = sampleone[0]?.y
+      let sampleone = getSampleByNum(this.ANA)
+      let sampleonecr = sampleone[0]?.x
+      let sampleoneni = sampleone[0]?.y
 
       function getSampleByGroupe(Sample) {
         return output2.filter(function (output2) {
-          return output2.GROUPE == Sample || output2.GROUPE == 7
+          return output2.GROUPE === Sample || output2.GROUPE === 7
         })
       }
 
-      var thasiansample = getSampleByGroupe(13)
+      let thasiansample = getSampleByGroupe(13)
 
-      var scatterChartDs = {
+      let scatterChartDs = {
         datasets: [
           {
             label: 'Current sample',
@@ -186,7 +186,7 @@ export default {
     },
     buildChart() {
       // indique X et Y pour le scatterchart
-      var output2 = xrfResultsThasos.map((s) => {
+      let output2 = xrfResultsThasos.map((s) => {
         // eslint-disable-next-line no-prototype-builtins
         if (s.hasOwnProperty('Cr')) {
           s.x = s.Cr
@@ -201,25 +201,25 @@ export default {
       // select specific sample
       function getSampleByNum(Sample) {
         return output2.filter(function (output2) {
-          return output2.Sample == Sample
+          return output2.Sample === Sample
         })
       }
 
-      var sampleone = getSampleByNum(this.ANA)
-      var sampleonecr = sampleone[0]?.x
-      var sampleoneni = sampleone[0]?.y
+      let sampleone = getSampleByNum(this.ANA)
+      let sampleonecr = sampleone[0]?.x
+      let sampleoneni = sampleone[0]?.y
 
       // select thasian samples (groupe 7 13)
       function getSampleByGroupe(Sample) {
         return output2.filter(function (output2) {
-          return output2.GROUPE == Sample || output2.GROUPE == 7
+          return output2.GROUPE === Sample || output2.GROUPE === 7
         })
       }
 
-      var thasiansample = getSampleByGroupe(13)
+      let thasiansample = getSampleByGroupe(13)
 
       // build chart ------------------------------------------------
-      var scatterChartData = {
+      let scatterChartData = {
         datasets: [
           {
             label: 'Current sample',
@@ -244,7 +244,7 @@ export default {
         ]
       }
 
-      var ctx = document.getElementById('myChart').getContext('2d')
+      let ctx = document.getElementById('myChart').getContext('2d')
       // eslint-disable-next-line no-undef
       this.scatterChart = new Chart(ctx, {
         type: 'scatter',
