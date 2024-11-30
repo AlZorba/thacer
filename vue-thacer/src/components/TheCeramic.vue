@@ -173,10 +173,10 @@ export default {
       const features = ceramGeojson['features']
 
       //See if it could be better like this
-      // ceramGeojson['features'].filter((feature) => feature.properties.ID == id)[0].properties
+      // ceramGeojson['features'].filter((feature) => feature.properties.ID === id)[0].properties
 
       for (let i = 0; i < features.length; i++) {
-        if (features[i].properties.ID == id) {
+        if (features[i].properties.ID === id) {
           return features[i].properties
         }
       }

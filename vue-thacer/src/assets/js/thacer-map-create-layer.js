@@ -2,42 +2,42 @@ import * as search from '@/assets/js/thacer-map-setup-search'
 import L from 'leaflet'
 
 export function setCeramLayer(ceramLayer) {
-  let popup = ''
-
   ceramLayer.setOpacity(0.8)
+
+  let popup = ''
   if (ceramLayer.feature.properties.Archimage) {
     popup =
       "<img src='https://archimage.efa.gr/action.php?kroute=image_preview_public&id=" +
       ceramLayer.feature.properties.Archimage +
       "&type=2&ext=.jpg' /><br>"
   }
-  popup =
-    popup +
+  popup +=
     '<a class="text-decoration-none text-secondary" target="_blank" href=#/ceram?ID=' +
     ceramLayer.feature.properties.ID +
     '>'
-  if (ceramLayer.feature.properties.Forme) {
-    popup = popup + ceramLayer.feature.properties.Forme + '<br>'
-  }
-  if (ceramLayer.feature.properties.Pi) {
-    popup = popup + 'Π' + ceramLayer.feature.properties.Pi + '<br>'
-  }
-  if (ceramLayer.feature.properties.Inv_Fouille) {
-    popup = popup + 'inv : ' + ceramLayer.feature.properties.Inv_Fouille + '<br>'
-  }
+  const fields = [
+    'Forme',
+    'Pi',
+    'Inv_Fouille',
+    'Référence tesson',
+    'Numéro d’inventaire',
+    'Type',
+    'Catégorie',
+    'Origine',
+    'Description',
+    'Référence',
+    'Publication',
+    'Bibliographie'
+  ]
 
-  if (ceramLayer.feature.properties.Type) {
-    popup = popup + 'Type : ' + ceramLayer.feature.properties.Type + '<br>'
-  }
-  if (ceramLayer.feature.properties.Description) {
-    popup = popup + ceramLayer.feature.properties.Description + '<br>'
-  }
-  if (ceramLayer.feature.properties.Biblio) {
-    popup = popup + ceramLayer.feature.properties.Biblio + '<br>'
-  }
-  if (ceramLayer.feature.properties.Publication) {
-    popup = popup + ceramLayer.feature.properties.Publication + '<br>'
-  }
+  fields.forEach((field) => {
+    if (ceramLayer.feature.properties[field]) {
+      popup += `${field === 'Pi' ? 'Inventaire musée ' : field} : ${
+        ceramLayer.feature.properties[field]
+      }<br>`
+    }
+  })
+
   ceramLayer.bindPopup(popup + '</a>', {
     maxWidth: 350,
     minWidth: 350,
@@ -49,48 +49,31 @@ export function setCeramLayer(ceramLayer) {
 }
 
 export function createFeatureLayerSecteurs(ceram, markerClusterGroupCeram, map) {
-  // create a new leaflet GeoJSON layer
   const layer = L.geoJSON()
 
-  // fetch the data from the API URL using the fetch method
   fetch(import.meta.env.VITE_API_URL + 'geojson/secteurs.geojson')
-    .then((response) => response.json()) // parse the response as JSON
+    .then((response) => response.json())
     .then((data) => {
-      // add the GeoJSON data to the leaflet layer
       layer.addData(data)
 
       // set up the popup and click events for each layer
       layer.eachLayer(function (e) {
-        let string = ''
-        let biblio = ''
-        if (
-          !(
-            // GTh means "Guide de Thasos"
-            (
-              (e.feature.properties.GTh == '') |
-              (e.feature.properties.GTh == 'null') |
-              (e.feature.properties.GTh == undefined)
-            )
-          )
-        ) {
-          string = ' GTh' + e.feature.properties.GTh
+        let stringGTh = ''
+        let stringRef = ''
+        if (e.feature.properties.GTh) {
+          stringGTh = ' GTh' + e.feature.properties.GTh
         }
-        if (
-          !(
-            (e.feature.properties.Référenc == '') |
-            (e.feature.properties.Référenc == 'null') |
-            (e.feature.properties.Référenc == undefined)
-          )
-        ) {
-          biblio = e.feature.properties.Référenc
+        if (e.feature.properties.Référenc) {
+          stringRef = e.feature.properties.Référenc
         }
-        e.bindPopup(e.feature.properties.Titre + string + '<br>' + biblio, {
+        e.bindPopup(e.feature.properties.Titre + stringGTh + '<br>' + stringRef, {
           maxWidth: 300,
           minWidth: 10,
           maxHeight: 250,
           autoPan: true,
           closeButton: false,
-          autoPanPadding: [0, 0]
+          autoPanPadding: [0, 0],
+          offset: [0, -22]
         })
         // search ceram on click
         e.on('click', function () {
@@ -104,14 +87,10 @@ export function createFeatureLayerSecteurs(ceram, markerClusterGroupCeram, map) 
 }
 
 export function createFeatureLayerCeram(markerClusterGroupCeram, map) {
-  // Créer une nouvelle couche GeoJSON Leaflet
   let featureLayerCeram = L.geoJSON()
 
-  // Vérifier si les données sont déjà dans le sessionStorage
   const cachedData = sessionStorage.getItem('ceramData')
-
   if (cachedData) {
-    // Si les données sont dans le sessionStorage, les utiliser
     const data = JSON.parse(cachedData)
 
     featureLayerCeram = L.geoJSON(data, {
@@ -122,7 +101,6 @@ export function createFeatureLayerCeram(markerClusterGroupCeram, map) {
     })
     search.designMarkersCeram(markerClusterGroupCeram)
   } else {
-    // Sinon, récupérer les données via fetch
     fetch(import.meta.env.VITE_API_URL + 'index.php?CERAM')
       .then((response) => response.json())
       .then((data) => {
@@ -147,7 +125,6 @@ export function createFeatureLayerCeram(markerClusterGroupCeram, map) {
   // Configurer la recherche
   search.setupSearchCeramByText(markerClusterGroupCeram, map)
 
-  // Retourner la couche Leaflet
   return featureLayerCeram
 }
 
@@ -161,40 +138,15 @@ export function createMarkerClusterGroupCeram() {
   })
 }
 
-// function designMarkersCeram(layer) {
-//   layer.eachLayer(function (marker) {
-//     let identifier
-//     const feature = marker.feature
-
-//     if (feature.properties.Pi) {
-//       identifier = 'Π' + feature.properties.Pi
-//     } else {
-//       identifier = feature.properties.ID
-//     }
-
-//     marker.setIcon(
-//       L.divIcon({
-//         html: identifier,
-//         className: 'ceram-marker',
-//         iconSize: 'auto'
-//       })
-//     )
-//   })
-// }
-
 export function createFeatureLayerVestiges() {
   let vestiges = L.featureGroup()
 
-  // Load GeoJSON data from URL
   fetch(import.meta.env.VITE_API_URL + 'geojson/vestiges.geojson')
     .then((res) => res.json())
     .then((data) => {
-      // Create a Leaflet GeoJSON layer from the data
       let layer = L.geoJSON(data, {
         style: { color: 'grey' }
       })
-
-      // Add the layer to the feature group
       vestiges.addLayer(layer)
     })
 
