@@ -1,21 +1,21 @@
-"Corpus","Pi","ID","Inventaire","Archimage","Num_Analyse","secteur_ID","Année","Famille","Catégorie","Type","Forme","Description","Bibliographie","Période","x","y"
-"Archimage","Π5196","5196",,"8735",,177,"1969","tablette",,,"tablette","tablette inscrite",,,24.712014347,40.775779891
-"Archimage","Π5172","5172",,"2901",,177,"1969","stockage",,"à reliefs","pithos","fragment de panse avec rosace en relief",,,24.712014347,40.775779891
-"Archimage","Π5147","5147",,"8747",,177,"1969","CO",,,"trépied","trépied à reliefs estampés à la roulette, fragment, argile, la course de biges au chien et au trépied",,,24.712014347,40.775779891
-"Archimage","Π2692","2692",,"8744",,27,"1960","stockage",,"à reliefs","pithos","pithos à reliefs estampés à la roulette, fragment, argile, la dispute du trépied",,,24.715039152,40.780367769
-"Archimage","Π3930","3930",,"8832",,27,"1965","fine","orientalisant",,"plat","fragment avec motif de remplissage",,,24.715039152,40.780367769
-"Archimage","Π3934","3934",,"8832",,27,"1965","fine","orientalisant",,"plat","fragment avec motif de remplissage",,,24.715039152,40.780367769
-"Archimage","Π3994","3994","65 0656","8842",,27,"1965","fine","orientalisant",,"plat","fragment avec motifs de remplissage",,,24.715039152,40.780367769
-"Archimage","Π3976","3976",,"8839",,27,"1965","fine","orientalisant",,"amphore","fragment avec motif de remplissage",,,24.715039152,40.780367769
-"Archimage","Π3935","3935",,"8833",,27,"1965","fine","orientalisant",,"plat","fragment avec personnage",,,24.715039152,40.780367769
-"Archimage","Π3931","3931",,"8833",,27,"1965","fine","orientalisant",,"plat","fragment avec personnage",,,24.715039152,40.780367769
-"Archimage","Π3958","3958",,"8839",,27,"1965","fine","orientalisant",,"amphore","fragment avec motif de remplissage",,,24.715039152,40.780367769
-"Archimage","Π2691","2691",,"8740",,27,"1960","stockage",,"à reliefs","pithos","pithos à reliefs estampés à la roulette, fragment, argile, la dispute du trépied, le départ d'Amphiaraos",,,24.715039152,40.780367769
-"Archimage","Π3938","3938",,"55494",,27,"1965","fine","orientalisant",,"plat","Plat thasien, orientalisant avec tête féminine",,,24.715039152,40.780367769
-"Archimage","Π819","819",,"8827",,33,"1954","stockage",,"à reliefs","pithos","fragment de panse, bige en relief",,,24.713265110,40.779964269
-"Archimage","Π2433","2433",,"1433",,57,"1957","fine","FN",,,"Décor : motif géométrique motif végétal motif animalier",,,24.714808089,40.779887449
-"Archimage","Π2085","2085",,"2854",,57,"1958","fine","cycladique","plat à bobine","plat","Décor : Bellérophon sur Pégase, Chimère. Cf aussi archimage 338244",,,24.714808089,40.779887449
-"Archimage","Π2191","2191",,"16219",,57,"1959","fine","orientalisant","à bobine","plat","motifs orientalisants, oiseau, panthère",,,24.714808089,40.779887449
-"Archimage","Π2407","2407",,,,57,"1957","fine","cycladique",,"plat","fragment de bord avec fil de chiens",,,24.714808089,40.779887449
-"Archimage","Π2198","2198",,"8841",,57,"1959","fine","orientalisant",,"plat","motifs orientalisants",,,24.714808089,40.779887449
-"Archimage","Π2057","2057",,"2852",,102,"1958","fine","orientalisant",,"plat","cavalier, chevaux et fil de felins","https://www.persee.fr/doc/bch_0007-4217_1960_num_84_1_1563",,24.719882893,40.778453198
+"Corpus","Pi","ID","Inventaire","Archimage","Num_Analyse","secteur_ID","Année","Famille","Catégorie","Type","Forme","Description","Référence","Période","x","y"
+"Archimage","Π5196","Π5196",,"8735",,177,"1969","tablette",,,"tablette","tablette inscrite",,,24.712014347,40.775779891
+"Archimage","Π5172","Π5172",,"2901",,177,"1969","stockage",,"à reliefs","pithos","fragment de panse avec rosace en relief",,,24.712014347,40.775779891
+"Archimage","Π5147","Π5147",,"8747",,177,"1969","CO",,,"trépied","trépied à reliefs estampés à la roulette, fragment, argile, la course de biges au chien et au trépied",,,24.712014347,40.775779891
+"Archimage","Π2692","Π2692",,"8744",,27,"1960","stockage",,"à reliefs","pithos","pithos à reliefs estampés à la roulette, fragment, argile, la dispute du trépied",,,24.715039152,40.780367769
+"Archimage","Π3930","Π3930",,"8832",,27,"1965","fine","orientalisant",,"plat","fragment avec motif de remplissage",,,24.715039152,40.780367769
+"Archimage","Π3934","Π3934",,"8832",,27,"1965","fine","orientalisant",,"plat","fragment avec motif de remplissage",,,24.715039152,40.780367769
+"Archimage","Π3994","Π3994","65 0656","8842",,27,"1965","fine","orientalisant",,"plat","fragment avec motifs de remplissage",,,24.715039152,40.780367769
+"Archimage","Π3976","Π3976",,"8839",,27,"1965","fine","orientalisant",,"amphore","fragment avec motif de remplissage",,,24.715039152,40.780367769
+"Archimage","Π3935","Π3935",,"8833",,27,"1965","fine","orientalisant",,"plat","fragment avec personnage",,,24.715039152,40.780367769
+"Archimage","Π3931","Π3931",,"8833",,27,"1965","fine","orientalisant",,"plat","fragment avec personnage",,,24.715039152,40.780367769
+"Archimage","Π3958","Π3958",,"8839",,27,"1965","fine","orientalisant",,"amphore","fragment avec motif de remplissage",,,24.715039152,40.780367769
+"Archimage","Π2691","Π2691",,"8740",,27,"1960","stockage",,"à reliefs","pithos","pithos à reliefs estampés à la roulette, fragment, argile, la dispute du trépied, le départ d'Amphiaraos",,,24.715039152,40.780367769
+"Archimage","Π3938","Π3938",,"55494",,27,"1965","fine","orientalisant",,"plat","Plat thasien, orientalisant avec tête féminine",,,24.715039152,40.780367769
+"Archimage","Π819","Π819",,"8827",,33,"1954","stockage",,"à reliefs","pithos","fragment de panse, bige en relief",,,24.713265110,40.779964269
+"Archimage","Π2433","Π2433",,"1433",,57,"1957","fine","FN",,,"Décor : motif géométrique motif végétal motif animalier",,,24.714808089,40.779887449
+"Archimage","Π2085","Π2085",,"2854",,57,"1958","fine","cycladique","plat à bobine","plat","Décor : Bellérophon sur Pégase, Chimère. Cf aussi archimage 338244",,,24.714808089,40.779887449
+"Archimage","Π2191","Π2191",,"16219",,57,"1959","fine","orientalisant","à bobine","plat","motifs orientalisants, oiseau, panthère",,,24.714808089,40.779887449
+"Archimage","Π2407","Π2407",,,,57,"1957","fine","cycladique",,"plat","fragment de bord avec fil de chiens",,,24.714808089,40.779887449
+"Archimage","Π2198","Π2198",,"8841",,57,"1959","fine","orientalisant",,"plat","motifs orientalisants",,,24.714808089,40.779887449
+"Archimage","Π2057","Π2057",,"2852",,102,"1958","fine","orientalisant",,"plat","cavalier, chevaux et fil de felins","https://www.persee.fr/doc/bch_0007-4217_1960_num_84_1_1563",,24.719882893,40.778453198
